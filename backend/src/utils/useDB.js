@@ -5,7 +5,7 @@ const cfg = config();
 
 async function DBsetup() {
     const pool = mysql.createPool({
-        host: cfg.db.user,
+        host: cfg.db.host,
         user: cfg.db.user,
         password: cfg.db.password,
         database: cfg.db.database,

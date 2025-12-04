@@ -17,7 +17,7 @@ export default async function adminSetup() {
     const type = adminConfig.type;
     const createdat = adminConfig.createdat;
     try {
-        const insertAdminQuery = `INSERT INTO users (username, password, email, type, createdat) VALUES (?, ?, ?, ?, ?)`;
+        const insertAdminQuery = `INSERT INTO users (username, passwordhash, email, type, createdat) VALUES (?, ?, ?, ?, ?)`;
         await useDB(insertAdminQuery, [defAdminUsername, hashedPassword, defAdminEmail, type, createdat]);
         console.log(`Alapértelmezett admin felhasználó létrehozva: Felhasználónév: ${defAdminUsername}, Jelszó: ${defAdminPassword}`);
     }
