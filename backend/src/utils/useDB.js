@@ -5,11 +5,12 @@ const cfg = config();
 
 async function DBsetup() {
     const pool = mysql.createPool({
-        host: cfg.dbHost,
-        user: cfg.dbUser,
-        password: cfg.dbPassword,
-        database: cfg.dbName,
-        connectionLimit: 10
+        host: cfg.db.user,
+        user: cfg.db.user,
+        password: cfg.db.password,
+        database: cfg.db.database,
+        connectionLimit: 10,
+        port: cfg.db.port
     });
     return pool.getConnection();
 }

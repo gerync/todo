@@ -1,6 +1,6 @@
 import argon2 from 'argon2';
-import useDB from './useDB';
-import config from './config';
+import useDB from './useDB.js';
+import config from './config.js';
 
 export default async function adminSetup() {
     const checkAdminQuery = `SELECT * FROM users WHERE type = 'admin' LIMIT 1`;

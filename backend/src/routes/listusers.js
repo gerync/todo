@@ -1,6 +1,6 @@
-import adminMiddleware from "../middlewares/admin";
+import adminMiddleware from "../middlewares/admin.js";
 import express from "express";
-import listusers from "../controllers/listusers";
+import listusers from "../controllers/listusers.js";
 
 const router = express.Router();
 router.get('/', adminMiddleware, listusers);

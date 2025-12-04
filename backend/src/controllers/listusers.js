@@ -1,4 +1,4 @@
-import useDB from "../utils/useDB";
+import useDB from "../utils/useDB.js";
 export default async (req, res) => {
     try {
         const query = `SELECT username, email, createdat, type FROM users`;

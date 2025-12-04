@@ -1,4 +1,4 @@
-import useDB from "../utils/useDB";
+import useDB from "../utils/useDB.js";
 import getuserid from "../utils/userid.js";
 
 export default async function adminMiddleware(req, res, next) {
