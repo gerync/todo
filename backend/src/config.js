@@ -9,6 +9,13 @@ export default function() {
             "database": process.env.DBNAME || "todo",
             "user": process.env.USER || "root",
             "password": process.env.PASSWORD || "root"
+        },
+        "defAdmin": {
+            "username": process.env.DEFADMINUSER || "admin",
+            "password": process.env.DEFADMINPASS || "admin123",
+            "email": process.env.DEFADMINEMAIL || "admin@gmail.com",
+            "type": "admin",
+            "createdat": new Date().toISOString()
         }
     };
     return config;
