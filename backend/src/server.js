@@ -11,6 +11,7 @@ import registerUser from './routes/register.js';
 import loginUser from './routes/login.js';
 import addTask from './routes/addtask.js';
 import listtask from './routes/listtask.js';
+import listusers from './routes/listusers.js';
 // #endregion
 
 // #region express app setup
@@ -28,10 +29,13 @@ app.use('/api/register', registerUser);
 app.use('/api/login', loginUser);
 app.use('/api/addtask', addTask);
 app.use('/api/listtask', listtask);
+app.use('/api/listusers', listusers);
 // #endregion
 
 // #region server start
-app.listen(cfg.port, () => {
-    console.log(`Server is running on port ${cfg.port}`);
-});
-// #endregion
+import adminSetup from './utils/adminsetup.js';
+app.listen(cfg.port, async () => {
+    adminSetup();
+    console.log(`Szerver fut a következő porton: ${cfg.port}`);
+}
+);
