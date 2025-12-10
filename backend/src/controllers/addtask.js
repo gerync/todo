@@ -1,30 +1,37 @@
-import useDB from '../utils/useDB.js';
+import DB from "../database/useDB.js";
 
-export default async function addTask(req, res) {
-    const { title, description, dueto, category } = req.body;
-    const sessiontoken = req.cookies.authToken;
-    let categoryId = null;
+export default async function addTaskController(req, res) {
+    const { title, description, dueDate, category } = req.body;
+    const userid = req.cookies.auth.id;
+    const conn = await DB.pool.getConnection();
     try {
-        const queryUser = 'SELECT userid FROM sessions WHERE sessiontoken = ?';
-        const userResults = await useDB(queryUser, [sessiontoken]);
-        if (userResults.length === 0) {
-            return res.status(401).json({ message: 'Érvénytelen hitelesítő token, hozzáférés megtagadva' });
+        const categoryQuery = await DB.useDB(
+            "SELECT id FROM categories WHERE name = ? AND userid = ?",
+            [category, userid]
+        );
+        let categoryId;
+        if (categoryQuery.length === 0) {
+            const result = await DB.useDB(
+                "INSERT INTO categories (name, userid) VALUES (?, ?)",
+                [category, userid]);
+            categoryId = result.insertId;
         }
-        const userid = userResults[0].userid;
-        const queryCategory = 'SELECT id FROM categories WHERE userid = ? AND name = ?';
-        const categoryResults = await useDB(queryCategory, [userid, category]);
-        if (categoryResults.length === 0) {
-            const queryInsertCategory = 'INSERT INTO categories (userid, name) VALUES (?, ?)';
-            const insertCategoryResult = await useDB(queryInsertCategory, [userid, category]);
-            categoryId = insertCategoryResult.insertId;
-        } else {
-            categoryId = categoryResults[0].id;
+        else {
+            categoryId = categoryQuery[0].id;
         }
-        const queryInsertTask = 'INSERT INTO tasks (userid, title, description, dueto, categoryid) VALUES (?, ?, ?, ?, ?)';
-        await useDB(queryInsertTask, [userid, title, description, dueto, categoryId]);
-        return res.status(201).json({ message: 'Feladat sikeresen hozzáadva' });
-    } catch (error) {
-        console.error('Hiba történt a feladat hozzáadása során:', error);
-        return res.status(500).json({ message: 'Hiba történt a feladat hozzáadása során' });
+        const r = await DB.useDB(
+            "INSERT INTO tasks (title, description, dueDate, categoryid, userid) VALUES (?, ?, ?, ?, ?)",
+            [title, description || null, dueDate, categoryId, userid]
+        );
+        if (r.affectedRows === 0) {
+            conn.release();
+            return res.status(500).json({ message: "Feladat hozzáadása sikertelen" });
+        }
+        conn.release();
+        return res.status(201).json({ message: "Feladat sikeresen hozzáadva" });
+    }
+    catch (error) {
+        conn.release();
+        return res.status(500).json({ message: "Belső szerverhiba" });
     }
 }
