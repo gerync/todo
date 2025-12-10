@@ -1,5 +1,5 @@
-import registerUser from "../controllers/register";
-import registerMiddleware from './middlewares/register.js';
+import registerUser from "../controllers/register.js";
+import registerMiddleware from '../middlewares/register.js';
 import express from "express";
 
 const router = express.Router();

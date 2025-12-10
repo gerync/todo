@@ -1,4 +1,4 @@
-import useDB from '../database/useDB.js';
+import useDB from '../utils/useDB.js';
 import argon2 from 'argon2';
 
 export default async function registerUser(req, res) {
@@ -8,8 +8,8 @@ export default async function registerUser(req, res) {
 
         const connection = await useDB();
         const [result] = await connection.execute(
-            'INSERT INTO users (username, password) VALUES (?, ?)',
-            [username, hashedPassword]
+            'INSERT INTO users (username, passwordhash, birthdate, email) VALUES (?, ?, ?, ?)',
+            [username, hashedPassword, birthdate, email]
         );
         await connection.end();
 
