@@ -1,25 +1,25 @@
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-
-
+import { Form, Button, Card, Container, Row, Col } from "react-bootstrap";
 
 function UploadTodo() {
     const [formData, setFormData] = useState({
         title: "",
         description: "",
-        dueto: "",
+        dueDate: "",
         category: ""
     });
 
     const handleSubmit = async (e) => {
-        e.preventdefault();
+        e.preventDefault();
 
         const res = await fetch("http://localhost:3000/tasks/add", {
             method: "POST",
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),
         });
+
+        console.log(formData,await res.json())
 
         if (res.ok) {
             alert("Sikeres feltöltés")
@@ -29,7 +29,7 @@ function UploadTodo() {
     const handleChange = async (e) => {
         setFormData({
             ...formData,
-            [e.target.value]: e.target.name
+            [e.target.name]: e.target.value
         });
     }
 
@@ -38,6 +38,7 @@ function UploadTodo() {
         <>
             <h1>Todo</h1>
             <Form onSubmit={handleSubmit}>
+
                 <Form.Label>Title: </Form.Label>
                 <Form.Control type='Title' name='title' onChange={handleChange} placeholder='Title' /><br />
 
@@ -45,7 +46,7 @@ function UploadTodo() {
                 <Form.Control type='Description' name='description' onChange={handleChange} placeholder='Description' /> <br />
 
                 <Form.Label>Due to: </Form.Label>
-                <Form.Control type='Date' name='dueto' onChange={handleChange} placeholder='dueto' /> <br />
+                <Form.Control type='Date' name='dueDate' onChange={handleChange} placeholder='dueto' /> <br />
 
                 <Form.Label>Category: </Form.Label>
                 <Form.Control type='Category' name='category' onChange={handleChange} placeholder='Category' /><br />

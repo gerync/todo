@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import DB from "../database/useDB.js";
 
 export default async function authMiddleware(req, res, next) {
+    console.log(req.cookies.auth)
     try {
         if (!req.cookies.auth) {
             return res.status(401).json({ message: "Nincs érvényes hitelesítés" });

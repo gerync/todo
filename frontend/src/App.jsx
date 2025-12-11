@@ -24,6 +24,7 @@ function App() {
           </>
         ) : (
           <>
+          <Link to="/">Home</Link> | {" "}
           <Link to="/UploadTodo">UploadTodo</Link>
           <button onClick={handleLogout}>Logout</button>
           </>

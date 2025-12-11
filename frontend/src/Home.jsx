@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Form, Button, Card, Container, Row, Col } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 
 function Home() {
     const [ListData, setListData] = useState([]);
     const [error, setError] = useState("");
 
     const fetchProducts = async () => {
-        const res = await fetch("https://localhost/tasks/list");
+        const res = await fetch("http://localhost:3000/tasks/list", {
+            credentials: "include",
+        });
         const data = await res.json();
         if (res.ok) {
-            setListData(data);
+            setListData(data.tasks);
         }
         else {
             setError(data.message);
@@ -25,24 +27,14 @@ function Home() {
             <h1>Üdvözöllek </h1>
 
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
-                {products.map((listData) => (
-                    <Card key={listData.id} style={{ width: "18rem", margin: "20px" }}>
+                {ListData.map((task) => (
+                    <Card key={task.id} style={{ width: "18rem", margin: "20px" }}>
                         <Card.Body>
-                            <Card.Title>{listData.Title}</Card.Title>
+                            <Card.Title>{task.title}</Card.Title>
                             <Card.Text>
-                                Descrpition: {listData.Description}
-                                Due To: {listData.Dueto}
-
-                                {listData.IsCompleted ? (
-                                    <>
-                                        Is Completed: Yes
-                                    </>
-                                ) : (
-                                    <>
-                                        Is Completed: No
-                                    </>
-                        )}
-                                
+                                <p>Description: {task.description}</p>
+                                <p>Due To: {task.dueto}</p>
+                                <p>Is Completed: {task.isCompleted ? "Yes" : "No"}</p>
                             </Card.Text>
                         </Card.Body>
                     </Card>
