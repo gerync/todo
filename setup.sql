@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS todo;
+CREATE DATABASE IF NOT EXISTS todo
 CHARACTER SET utf8
 DEFAULT COLLATE utf8_hungarian_ci;
 USE todo;
@@ -11,14 +11,23 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE,
     type ENUM('admin', 'user', 'suspended') DEFAULT 'user'
 );
+CREATE TABLE IF NOT EXISTS categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userid INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     userid INT NOT NULL,
-    chategory VARCHAR(100),
+    categoryid INT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     iscompleted BOOLEAN DEFAULT FALSE,
     dueto DATE,
     createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (userid) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (categoryid) REFERENCES categories(id) ON DELETE SET NULL
 );

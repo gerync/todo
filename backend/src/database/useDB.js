@@ -1,21 +1,20 @@
 import mysql from 'mysql2/promise';
 import config from '../config.js';
 
-const cfg = config();
+export const pool = mysql.createPool({
+    host: config.db.host,
+    user: config.db.user,
+    password: config.db.password,
+    database: config.db.name,
+    port: config.db.port,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
-async function DBsetup() {
-    const connection = await mysql.createConnection({
-        host: cfg.db.host,
-        port: cfg.db.port,
-        user: cfg.db.user,
-        password: cfg.db.password,
-        database: cfg.db.database
-    });
-    return connection;
+export async function useDB(sql, params) {
+    const [result] = await pool.query(sql, params);
+    return result;
 }
-export default async function useDB(query, params) {
-    const connection = await DBsetup();
-    const [results] = await connection.execute(query, params);
-    await connection.end();
-    return results;
-}
+
+export default { pool, useDB };

@@ -1,35 +1,35 @@
 export default function registerMiddleware(req, res, next) {
-    const { username, password, email, birthdate } = req.body;
+    const { username, password, birthdate, email } = req.body;
+    const auth = req.cookies.auth;
+    if (auth) {
+        return res.status(400).json({ message: "Már be vagy jelentkezve" });
+    }
     if (Object.keys(req.body).length !== 4) {
-        return res.status(400).json({ message: 'Nincsenek adatok elküldve, vagy több adat van küldve 4nél' });
+        return res.status(400).json({ message: "Túl sok mező a kérésben" });
     }
-    if (!username || !password || !email || !birthdate) {
-        return res.status(400).json({ message: 'Hiányzó felhasználói adatok' });
+    if (!username || !password || !birthdate || !email) {
+        return res.status(400).json({ message: "Minden mező kitöltése kötelező" });
     }
-    if (typeof username !== 'string' || typeof password !== 'string' || typeof email !== 'string' || typeof birthdate !== 'string') {
-        return res.status(400).json({ message: 'Hibás adat típus' });
+
+    if (typeof username !== 'string' || typeof password !== 'string' || typeof birthdate !== 'string' || typeof email !== 'string') {
+        return res.status(400).json({ message: "A felhasználónévnek és jelszónak szövegnek kell lennie" });
     }
-    if (password.length < 8 || password.length > 32) {
-        return res.status(400).json({ message: 'A jelszónak 8 és 32 karakter közé kell esnie' });
+
+    if (username.length < 3 || username.length > 20) {
+        return res.status(400).json({ message: "A felhasználónévnek 3 és 20 karakter közötti hosszúságúnak kell lennie" });
     }
-    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,32}$/;
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({ message: 'A jelszónak tartalmaznia kell legalább egy számot és egy speciális karaktert' });
+
+    if (password.length < 6) {
+        return res.status(400).json({ message: "A jelszónak legalább 6 karakter hosszúnak kell lennie" });
     }
-    const usernameRegex = /^(?=.{3,24}$)(?!.*[A-Z])[a-z0-9_-]+$/;
-    if (!usernameRegex.test(username)) {
-        return res.status(400).json({ message: 'A felhasználónév csak kisbetűket, számokat, alulvonást és kötőjelet tartalmazhat, és 3-24 karakter hosszú lehet' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return res.status(400).json({ message: "Érvénytelen email cím" });
     }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ message: 'Érvénytelen email cím' });
-    }
+
     const birthdateObj = new Date(birthdate);
-    if (isNaN(birthdateObj.getTime())) {
-        return res.status(400).json({ message: 'Érvénytelen születési dátum' });
-    }
-    if (birthdateObj > new Date()) {
-        return res.status(400).json({ message: 'A születési dátum nem lehet a jövőben' });
+    const today = new Date();
+    if (isNaN(birthdateObj.getTime()) || birthdateObj >= today) {
+        return res.status(400).json({ message: "Érvénytelen születési dátum" });
     }
     next();
 }
