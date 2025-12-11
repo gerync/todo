@@ -1,7 +1,9 @@
-import DB from "../database/useDB.js";
+import DB from "../../database/useDB.js";
+import jwt from "jsonwebtoken";
+import config from "../../config.js";
 
 export default async function listCategoriesController(req, res) {
-    const userid = req.cookies.auth.id;
+    const userid = jwt.verify(req.cookies.auth, config.jwtSecret).id;;
     const conn = await DB.pool.getConnection();
     try {
         const categories = await DB.useDB(

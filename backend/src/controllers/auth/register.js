@@ -1,4 +1,4 @@
-import DB from "../database/useDB.js";
+import DB from "../../database/useDB.js";
 import argon2 from "argon2";
 
 export default async function registerController(req, res) {
@@ -7,17 +7,17 @@ export default async function registerController(req, res) {
     const hashedPassword = await argon2.hash(password);
     try {
         await DB.useDB(
-            "INSERT INTO users (username, password, birthdate, email) VALUES (?, ?, ?, ?)",
+            "INSERT INTO users (username, passwordhash, birthdate, email) VALUES (?, ?, ?, ?)",
             [username, hashedPassword, birthdate, email]
         );
         conn.release();
         return res.status(201).json({ message: "Sikeres regisztráció" });
     } catch (error) {
+        conn.release();
         if (error.code === "ER_DUP_ENTRY") {
-            conn.release();
-            res.status(409).json({ message: "Felhasználónév már foglalt" });
+            res.status(409).json({ message: "Felhasználónév vagy email már foglalt" });
         } else {
-            conn.release();
+            console.error("Register error:", error);
             res.status(500).json({ message: "Belső szerverhiba" });
         }
     }

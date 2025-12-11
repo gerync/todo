@@ -1,8 +1,10 @@
-import DB from "../database/useDB.js";
+import DB from "../../database/useDB.js";
+import jwt from "jsonwebtoken";
+import config from "../../config.js";
 
 export default async function addTaskController(req, res) {
     const { title, description, dueDate, category } = req.body;
-    const userid = req.cookies.auth.id;
+    const userid = jwt.verify(req.cookies.auth, config.jwtSecret).id;;
     const conn = await DB.pool.getConnection();
     try {
         const categoryQuery = await DB.useDB(
@@ -20,7 +22,7 @@ export default async function addTaskController(req, res) {
             categoryId = categoryQuery[0].id;
         }
         const r = await DB.useDB(
-            "INSERT INTO tasks (title, description, dueDate, categoryid, userid) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO tasks (title, description, dueto, categoryid, userid) VALUES (?, ?, ?, ?, ?)",
             [title, description || null, dueDate, categoryId, userid]
         );
         if (r.affectedRows === 0) {
@@ -32,6 +34,7 @@ export default async function addTaskController(req, res) {
     }
     catch (error) {
         conn.release();
+        console.error("Add task error:", error);
         return res.status(500).json({ message: "Belső szerverhiba" });
     }
 }

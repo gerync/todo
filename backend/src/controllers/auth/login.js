@@ -1,13 +1,13 @@
-import useDB from "../database/useDB.js";
+import DB from "../../database/useDB.js";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import config from "../config.js";
+import config from "../../config.js";
 
 export default async function loginController(req, res) {
     const { username, password } = req.body;
-    const conn = await useDB.pool.getConnection();
+    const conn = await DB.pool.getConnection();
     try {
-        const users = await useDB(
+        const users = await DB.useDB(
             "SELECT * FROM users WHERE username = ?",
             [username]
         );
@@ -16,7 +16,7 @@ export default async function loginController(req, res) {
             return res.status(401).json({ message: "Hibás felhasználónév vagy jelszó" });
         }
         const user = users[0];
-        const validPassword = await argon2.verify(user.password, password);
+        const validPassword = await argon2.verify(user.passwordhash, password);
         if (!validPassword) {
             conn.release();
             return res.status(401).json({ message: "Hibás felhasználónév vagy jelszó" });
@@ -35,6 +35,7 @@ export default async function loginController(req, res) {
         return res.status(200).json({ message: "Sikeres bejelentkezés", username: user.username });
     } catch (error) {
         conn.release();
+        console.error("Login error:", error);
         return res.status(500).json({ message: "Belső szerverhiba" });
     }
 }
