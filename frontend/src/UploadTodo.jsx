@@ -15,7 +15,7 @@ function UploadTodo() {
     const handleSubmit = async (e) => {
         e.preventdefault();
 
-        const res = await fetch("http://localhost:3000/api/addtask", {
+        const res = await fetch("http://localhost:3000/tasks/add", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData),

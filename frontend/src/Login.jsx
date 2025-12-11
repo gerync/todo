@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 function Login({setIsLoggedIn}){
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        email: "",
+        username: "",
         password: ""
     })
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
 
-        const res = await fetch('http://localhost:3000/api/login',{
+        const res = await fetch('http://localhost:3000/auth/login',{
             method: "POST",
             headers: {"Content-Type":"application/json"},
             body: JSON.stringify(formData),
@@ -37,8 +37,8 @@ function Login({setIsLoggedIn}){
         <h1>Login</h1>
 
         <Form onSubmit={handleSubmit}>
-            <Form.Label>Email: </Form.Label>
-            <Form.Control type='Email' name='email' onChange={handleChange} placeholder='Email' /> <br />
+            <Form.Label>Username: </Form.Label>
+            <Form.Control type='Username' name='username' onChange={handleChange} placeholder='Username' /> <br />
 
             <Form.Label>Password: </Form.Label>
             <Form.Control type='Password' name='password' onChange={handleChange} placeholder='Password' /> <br />

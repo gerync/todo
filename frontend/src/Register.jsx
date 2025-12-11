@@ -12,10 +12,10 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const res = await fetch('http://localhost:3000/api/register', {
+        const res = await fetch('http://localhost:3000/auth/register', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: formData,
+            body: JSON.stringify(formData),
         });
 
         if (res.ok) {
@@ -30,6 +30,7 @@ function Register() {
         })
     }
 
+    
 
     return (
 
