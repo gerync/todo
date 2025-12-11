@@ -1,34 +1,26 @@
-import useDB from "../utils/useDB.js";
+import config from "../config.js";
+import jwt from "jsonwebtoken";
+import DB from "../database/useDB.js";
 
-export default async function auth(req, res, next) {
-    const token = req.cookies.authToken;
-    if (!token) {
-        return res.status(401).json({ message: 'Nincs hitelesítő token, hozzáférés megtagadva' });
-    }
+export default async function authMiddleware(req, res, next) {
     try {
-        const query = 'SELECT userid, expiresat, createdat FROM sessions WHERE sessiontoken = ?';
-        const results = await useDB(query, [token]);
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'Érvénytelen hitelesítő token, hozzáférés megtagadva' });
+        if (!req.cookies.auth) {
+            return res.status(401).json({ message: "Nincs érvényes hitelesítés" });
         }
-        const now = new Date();
-        const expiresAt = new Date(results[0].expiresat);
-        if (expiresAt < now) {
-            return res.status(401).json({ message: 'A hitelesítő token lejárt, hozzáférés megtagadva' });
+        const userid = jwt.verify(req.cookies.auth, config.jwtSecret).id;
+        if (!userid) {
+            return res.status(401).json({ message: "Nincs érvényes hitelesítés" });
         }
-        if (results[0].createdat > now) {
-            return res.status(401).json({ message: 'Érvénytelen hitelesítő token, hozzáférés megtagadva' });
+        const query = "SELECT type FROM users WHERE id = ?";
+        const result = await DB.useDB(query, [userid])
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Felhasználó nem található" });
         }
-        const [ type ] = await useDB('SELECT type FROM users WHERE id = ?', [results[0].userid]);
-        if (!type) {
-            return res.status(401).json({ message: 'Érvénytelen felhasználó, hozzáférés megtagadva' });
-        }
-        if (type.type === 'suspended') {
-            return res.status(403).json({ message: 'A felhasználó felfüggesztve, hozzáférés megtagadva' });
+        if (result[0].type === 'suspended') {
+            return res.status(403).json({ message: "A felhasználói fiók felfüggesztésre került" });
         }
         next();
-    }
-    catch (error) {
-        return res.status(500).json({ message: 'Hiba történt a hitelesítés során' });
+    } catch (error) {
+        return res.status(401).json({ message: "Nincs érvényes hitelesítés" });
     }
 }

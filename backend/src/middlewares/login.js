@@ -1,13 +1,18 @@
 export default function loginMiddleware(req, res, next) {
-    const { userinfo, password } = req.body;
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: "Hiányzó felhasználónév vagy jelszó" });
+    }
+    if (typeof username !== "string" || typeof password !== "string") {
+        return res.status(400).json({ message: "Érvénytelen felhasználónév vagy jelszó" });
+    }
     if (Object.keys(req.body).length !== 2) {
-        return res.status(400).json({ message: 'Nincsenek adatok elküldve, vagy több adat van küldve 2nél' });
+        return res.status(400).json({ message: "Túl sok mező a kérésben" });
     }
-    if (!userinfo || !password) {
-        return res.status(400).json({ message: 'Hiányzó felhasználói adat vagy jelszó' });
-    }
-    if (typeof userinfo !== 'string' || typeof password !== 'string') {
-        return res.status(400).json({ message: 'Hibás adat típus' });
+    const auth = req.cookies.auth;
+    if (auth) {
+        return res.status(400).json({ message: "Már be vagy jelentkezve" });
     }
     next();
 }

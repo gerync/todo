@@ -1,8 +1,0 @@
-import addTask from "../controllers/addtask.js";
-import auth from "../middlewares/auth.js";
-import addTaskMiddleware from "../middlewares/addtask.js";
-import express from "express";
-
-const router = express.Router();
-router.post("/", [addTaskMiddleware, auth], addTask);
-export default router;

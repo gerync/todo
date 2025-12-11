@@ -1,41 +1,47 @@
 // #region npm imports
 import express from 'express';
 import cors from 'cors';
-import config from './utils/config.js';
 import cookieParser from 'cookie-parser';
+import config from './config.js';
 // #endregion
 
-// #region route imports
+// #region local imports
+import authRoutes from './routes/auth.js';
+import tasksRoutes from './routes/tasks.js';
+import userinfoRoutes from './routes/userinfo.js';
+import adminRoutes from './routes/admin.js';
+import setupDefaultAdmin from './utils/setupDefaultAdmin.js';
+import categoriesRoutes from './routes/categories.js';
 
-import registerUser from './routes/register.js';
-import loginUser from './routes/login.js';
-import addTask from './routes/addtask.js';
-import listtask from './routes/listtask.js';
-import listusers from './routes/listusers.js';
 // #endregion
-
 // #region express app setup
 const app = express();
-const cfg = config();
+const PORT = config.port;
+
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 // #endregion
+// #region routes
 
-// #region route setup
+app.use('/auth', authRoutes);
 
+app.use('/tasks', tasksRoutes);
 
-app.use('/api/register', registerUser);
-app.use('/api/login', loginUser);
-app.use('/api/addtask', addTask);
-app.use('/api/listtask', listtask);
-app.use('/api/listusers', listusers);
+app.use('/user', userinfoRoutes);
+
+app.use('/categories', categoriesRoutes);
+
+app.use('/admin', adminRoutes);
+
+app.get('/', (req, res) => {
+    res.send('Todo alkalmazás szerver');
+});
 // #endregion
-
 // #region server start
-import adminSetup from './utils/adminsetup.js';
-app.listen(cfg.port, async () => {
-    adminSetup();
-    console.log(`Szerver fut a következő porton: ${cfg.port}`);
-}
-);
+
+app.listen(PORT, () => {
+    setupDefaultAdmin();
+    console.log(`${PORT}-es porton fut a szerver`);
+});
+// #endregion
