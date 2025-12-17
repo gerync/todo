@@ -20,9 +20,17 @@ export default async function listTasksController(req, res) {
             );
         }
         conn.release();
+        const formatDuoTo = (dueto) => {
+            if (!dueto) return null;
+            const date = new Date(dueto);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
         const formattedTasks = tasks.map(task => ({
             ...task,
-            dueto: task.dueto ? new Date(task.dueto).toISOString().split('T')[0] : null
+            dueto: formatDuoTo(task.dueto)
         }));
         return res.status(200).json({ tasks: formattedTasks });
     }
