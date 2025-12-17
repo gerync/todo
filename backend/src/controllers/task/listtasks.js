@@ -20,7 +20,11 @@ export default async function listTasksController(req, res) {
             );
         }
         conn.release();
-        return res.status(200).json({ tasks });
+        const formattedTasks = tasks.map(task => ({
+            ...task,
+            dueto: task.dueto ? new Date(task.dueto).toISOString().split('T')[0] : null
+        }));
+        return res.status(200).json({ tasks: formattedTasks });
     }
     catch (error) {
         conn.release();
