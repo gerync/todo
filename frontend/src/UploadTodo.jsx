@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Form, Button, Card, Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
 
 function UploadTodo() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -23,6 +25,7 @@ function UploadTodo() {
 
         if (res.ok) {
             alert("Sikeres feltöltés")
+            navigate("/")
         }
     }
 
