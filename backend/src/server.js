@@ -20,7 +20,7 @@ const PORT = config.port;
 
 app.use(cors({
     credentials: true,
-    origin: "http://localhost:5173"
+    origin: config.corsOrigin
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -39,6 +39,17 @@ app.use('/admin', adminRoutes);
 
 app.get('/', (req, res) => {
     res.send('Todo alkalmazás szerver');
+});
+// 404 handler
+app.use((req, res) => {
+    return res.status(404).json({ message: 'Nem található' });
+});
+// Central error handler
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err);
+    if (res.headersSent) return; 
+    return res.status(500).json({ message: 'Belső szerverhiba' });
 });
 // #endregion
 // #region server start
