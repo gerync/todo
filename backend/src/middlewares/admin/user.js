@@ -48,9 +48,19 @@ export function ReactivateUserAdminMiddleware(req, res, next) {
     next();
 }
 
+export function GetUserAdminMiddleware(req, res, next) {
+    const { userid } = req.query;
+    if (!userid || isNaN(parseInt(userid, 10)) || parseInt(userid, 10) < 1) {
+        return res.status(400).json({ message: "Érvénytelen felhasználó azonosító" });
+    }
+    req.query.userid = parseInt(userid, 10);
+    next();
+}
+
 export default {
     EditUserAdminMiddleware,
     DeleteUserAdminMiddleware,
     SuspendUserAdminMiddleware,
-    ReactivateUserAdminMiddleware
+    ReactivateUserAdminMiddleware,
+    GetUserAdminMiddleware
 };

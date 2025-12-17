@@ -40,15 +40,19 @@ Authentication: cookie-based (`auth` JWT). Protected endpoints require a valid `
 | Method | Path | Body / Params | Success | Errors |
 | --- | --- | --- | --- | --- |
 | POST | `/admin/category/add` | `{ name, description?, userid }` | 200 `{ message }` | 400 validation, 401/403 auth, 500 server |
+| GET | `/admin/category/list?userid=` | query `userid` | 200 `{ categories: [...] }` | 400 invalid id, 401/403, 500 server |
 | PATCH | `/admin/category/edit` | `{ categoryid, name?, description? }` | 200 `{ message }` | 400 validation, 401/403, 500 server |
 | DELETE | `/admin/category/delete?categoryid=` | query `categoryid` | 200 `{ message }` | 400 invalid id, 401/403, 500 server |
 | POST | `/admin/task/add` | `{ title, description?, duedate: YYYY-MM-DD, categoryid, userid }` | 201 `{ message }` | 400 validation, 401/403, 500 server (FK failures if ids invalid) |
 | PATCH | `/admin/task/edit` | `{ taskid, title?, description?, duedate?, iscompleted?, categoryid? }` | 200 `{ message }` | 400 validation, 401/403, 500 server |
 | DELETE | `/admin/task/delete?taskid=` | query `taskid` | 200 `{ message }` | 400 invalid id, 401/403, 500 server |
+| GET | `/admin/task/list?categoryid=` | query `categoryid` | 200 `{ tasks: [...] }` | 400 invalid id, 401/403, 500 server |
 | PATCH | `/admin/user/edit?userid=` | query `userid`; body `{ username?, email?, birthdate?, password? }` | 200 `{ message }` | 400 validation, 401/403, 500 server |
 | DELETE | `/admin/user/delete?userid=` | query `userid` | 200 `{ message }` | 400 invalid id, 401/403, 500 server |
 | POST | `/admin/user/suspend?userid=` | query `userid` | 200 `{ message }` | 400 invalid id, 401/403, 500 server |
 | POST | `/admin/user/reactivate?userid=` | query `userid` | 200 `{ message }` | 400 invalid id, 401/403, 500 server |
+| GET | `/admin/user/list` | (none) | 200 `{ users: [...] }` | 401/403, 500 server |
+| GET | `/admin/user?userid=` | query `userid` | 200 `{ user }` | 400 invalid id, 401/403, 404 not found, 500 server |
 
 ## Notes
 - Dates: use `YYYY-MM-DD` (server normalizes inputs to this format).

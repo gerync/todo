@@ -9,26 +9,31 @@ import userController from '../controllers/admin/users.js';
 import {
     AddCategoryAdminMiddleware,
     EditCategoryAdminMiddleware,
-    DeleteCategoryAdminMiddleware
+    DeleteCategoryAdminMiddleware,
+    ListCategoriesByUserAdminMiddleware
 } from '../middlewares/admin/category.js';
 
 import {
     AddTaskAdminMiddleware,
     EditTaskAdminMiddleware,
-    DeleteTaskAdminMiddleware
+    DeleteTaskAdminMiddleware,
+    ListTasksByCategoryAdminMiddleware
 } from '../middlewares/admin/task.js';
 
 import {
     EditUserAdminMiddleware,
     DeleteUserAdminMiddleware,
     SuspendUserAdminMiddleware,
-    ReactivateUserAdminMiddleware
+    ReactivateUserAdminMiddleware,
+    GetUserAdminMiddleware
 } from '../middlewares/admin/user.js';
 
 const router = express.Router();
 
 router.post('/category/add', [authMiddleware, isAdmin, AddCategoryAdminMiddleware], categoryController.AddCategoryController
 );
+
+router.get('/category/list', [authMiddleware, isAdmin, ListCategoriesByUserAdminMiddleware], categoryController.listCategoriesByUserController);
 
 router.patch('/category/edit', [authMiddleware, isAdmin, EditCategoryAdminMiddleware], categoryController.EditCategoryController
 );
@@ -45,6 +50,8 @@ router.patch('/task/edit', [authMiddleware, isAdmin, EditTaskAdminMiddleware], t
 router.delete('/task/delete', [authMiddleware, isAdmin, DeleteTaskAdminMiddleware], taskController.DeleteTaskController
 );
 
+router.get('/task/list', [authMiddleware, isAdmin, ListTasksByCategoryAdminMiddleware], taskController.ListTasksByCategory);
+
 router.patch('/user/edit', [authMiddleware, isAdmin, EditUserAdminMiddleware], userController.EditUserController
 );
 
@@ -56,5 +63,8 @@ router.post('/user/suspend', [authMiddleware, isAdmin, SuspendUserAdminMiddlewar
 
 router.post('/user/reactivate', [authMiddleware, isAdmin, ReactivateUserAdminMiddleware], userController.ReactivateUserController
 );
+
+router.get('/user/list', [authMiddleware, isAdmin], userController.GetAllUsersController);
+router.get('/user', [authMiddleware, isAdmin, GetUserAdminMiddleware], userController.GetUserByIdController);
 
 export default router;

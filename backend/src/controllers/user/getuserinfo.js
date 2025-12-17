@@ -7,7 +7,7 @@ export default async function getUserInfoController(req, res) {
     const conn = await DB.pool.getConnection();
     try {
         const userInfo = await DB.useDB(
-            "SELECT id, username, email, createdat FROM users WHERE id = ?",
+            "SELECT id, username, email, birthdate, type, createdat FROM users WHERE id = ?",
             [userid]
         );
         conn.release();

@@ -12,6 +12,15 @@ export function AddCategoryAdminMiddleware(req, res, next) {
     next();
 }
 
+export function ListCategoriesByUserAdminMiddleware(req, res, next) {
+    const { userid } = req.query;
+    if (!userid || isNaN(parseInt(userid, 10)) || parseInt(userid, 10) < 1) {
+        return res.status(400).json({ message: "Érvénytelen felhasználó azonosító" });
+    }
+    req.query.userid = parseInt(userid, 10);
+    next();
+}
+
 export function EditCategoryAdminMiddleware(req, res, next) {
     const { categoryid, name, description } = req.body;
     if (!categoryid || isNaN(parseInt(categoryid, 10))) {
@@ -40,5 +49,6 @@ export function DeleteCategoryAdminMiddleware(req, res, next) {
 export default {
     AddCategoryAdminMiddleware,
     EditCategoryAdminMiddleware,
-    DeleteCategoryAdminMiddleware
+    DeleteCategoryAdminMiddleware,
+    ListCategoriesByUserAdminMiddleware
 };
