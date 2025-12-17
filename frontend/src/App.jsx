@@ -9,14 +9,28 @@ import UploadTodo from './UploadTodo';
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+  };
+
   return (
     <>
-
       <BrowserRouter>
-        <Link to="/">Home</Link> | {" "}
-        <Link to="/Register">Register</Link> | {" "}
-        <Link to="/Login">Login</Link>
-        <Link to="/UploadTodo">UploadTodo</Link>
+        {!isLoggedIn ? (
+          <>
+            <Link to="/">Home</Link> | {" "}
+            <Link to="/Register">Register</Link> | {" "}
+            <Link to="/Login">Login</Link> 
+          </>
+        ) : (
+          <>
+          <Link to="/">Home</Link> | {" "}
+          <Link to="/UploadTodo">UploadTodo</Link>
+          <button onClick={handleLogout}>Logout</button>
+          </>
+          
+          
+        )}
 
         <Routes>
           <Route path="/" element={<Home />} />

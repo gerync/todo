@@ -18,7 +18,10 @@ import categoriesRoutes from './routes/categories.js';
 const app = express();
 const PORT = config.port;
 
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:5173"
+}));
 app.use(express.json());
 app.use(cookieParser());
 // #endregion
