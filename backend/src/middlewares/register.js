@@ -12,7 +12,10 @@ export default function registerMiddleware(req, res, next) {
     }
 
     if (typeof username !== 'string' || typeof password !== 'string' || typeof birthdate !== 'string' || typeof email !== 'string') {
-        return res.status(400).json({ message: "A felhasználónévnek és jelszónak szövegnek kell lennie" });
+        req.body.username = String(username);
+        req.body.password = String(password);
+        req.body.birthdate = Date.parse(birthdate);
+        req.body.email = String(email);
     }
 
     if (username.length < 3 || username.length > 20) {

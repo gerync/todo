@@ -11,6 +11,7 @@ const config = {
     },
     port: process.env.PORT || 3000,
     jwtSecret: process.env.JWTSECRET || 'supersecretkey',
+    corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     baseadmin: {
         username: process.env.BASEADMIN_USERNAME || 'admin',
         email: process.env.BASEADMIN_EMAIL || 'admin@example.com',

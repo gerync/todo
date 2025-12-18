@@ -5,7 +5,8 @@ export default function loginMiddleware(req, res, next) {
         return res.status(400).json({ message: "Hiányzó felhasználónév vagy jelszó" });
     }
     if (typeof username !== "string" || typeof password !== "string") {
-        return res.status(400).json({ message: "Érvénytelen felhasználónév vagy jelszó" });
+        req.body.username = String(username);
+        req.body.password = String(password);
     }
     if (Object.keys(req.body).length !== 2) {
         return res.status(400).json({ message: "Túl sok mező a kérésben" });

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import config from '../../config.js';
 
 export async function DeleteTaskController(req, res) {
-    const { id } = req.query;
+    const id = req.query.id;
     const userid = jwt.verify(req.cookies.auth, config.jwtSecret).id;;
     const conn = await DB.pool.getConnection();
     try {
@@ -25,7 +25,8 @@ export async function DeleteTaskController(req, res) {
 }
 
 export async function EditTaskController(req, res) {
-    const { id, title, description, dueDate, isCompleted, category } = req.body;
+    const id = req.query.id;
+    const { title, description, dueDate, isCompleted, category } = req.body;
     const userid = jwt.verify(req.cookies.auth, config.jwtSecret).id;;
     const conn = await DB.pool.getConnection();
     try {

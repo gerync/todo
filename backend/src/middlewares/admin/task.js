@@ -56,8 +56,18 @@ export function DeleteTaskAdminMiddleware(req, res, next) {
     next();
 }
 
+export function ListTasksByCategoryAdminMiddleware(req, res, next) {
+    const { categoryid } = req.query;
+    if (!categoryid || isNaN(parseInt(categoryid, 10)) || parseInt(categoryid, 10) < 1) {
+        return res.status(400).json({ message: "Érvénytelen kategória azonosító" });
+    }
+    req.query.categoryid = parseInt(categoryid, 10);
+    next();
+}
+
 export default {
     AddTaskAdminMiddleware,
     EditTaskAdminMiddleware,
-    DeleteTaskAdminMiddleware
+    DeleteTaskAdminMiddleware,
+    ListTasksByCategoryAdminMiddleware
 };
