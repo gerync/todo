@@ -5,6 +5,7 @@ import Register from './Register';
 import Login from './Login';
 import Home from './Home';
 import UploadTodo from './UploadTodo';
+import Edit from './Edit';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -25,7 +26,8 @@ function App() {
         ) : (
           <>
           <Link to="/">Home</Link> | {" "}
-          <Link to="/UploadTodo">UploadTodo</Link>
+          <Link to="/UploadTodo">UploadTodo</Link> | {" "}
+          <Link to="/Edit">EditTodo</Link>
           <button onClick={handleLogout}>Logout</button>
           </>
           
@@ -37,6 +39,7 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/Login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/UploadTodo" element={<UploadTodo />} />
+          <Route path="/Edit" element={<Edit />} />
         </Routes>
       </BrowserRouter>
 
